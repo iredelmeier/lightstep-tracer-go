@@ -93,7 +93,7 @@ func (r *Reporter) Measure(ctx context.Context) error {
 	// TODO: ewwwww
 	pb.Points = append(pb.Points, &metricspb.MetricPoint{
 		Kind:          metricspb.MetricKind_GAUGE,
-		TimeSeriesKey: fmt.Sprintf("cpu.user"),
+		TimeSeriesKey: "cpu.user",
 		Labels: map[string]string{
 			"name": "process.cpu",
 		},
@@ -103,7 +103,7 @@ func (r *Reporter) Measure(ctx context.Context) error {
 	})
 	pb.Points = append(pb.Points, &metricspb.MetricPoint{
 		Kind:          metricspb.MetricKind_GAUGE,
-		TimeSeriesKey: fmt.Sprintf("cpu.system"),
+		TimeSeriesKey: "cpu.system",
 		Labels: map[string]string{
 			"name": "process.cpu",
 		},
@@ -119,7 +119,7 @@ func (r *Reporter) Measure(ctx context.Context) error {
 
 		pb.Points = append(pb.Points, &metricspb.MetricPoint{
 			Kind:          metricspb.MetricKind_GAUGE,
-			TimeSeriesKey: fmt.Sprintf("cpu.user"),
+			TimeSeriesKey: "cpu.user",
 			Labels:        labels,
 			Value: &metricspb.MetricPoint_Float{
 				Float: cpu.User,
@@ -127,7 +127,7 @@ func (r *Reporter) Measure(ctx context.Context) error {
 		})
 		pb.Points = append(pb.Points, &metricspb.MetricPoint{
 			Kind:          metricspb.MetricKind_GAUGE,
-			TimeSeriesKey: fmt.Sprintf("cpu.system"),
+			TimeSeriesKey: "cpu.system",
 			Labels:        labels,
 			Value: &metricspb.MetricPoint_Float{
 				Float: cpu.System,
@@ -135,7 +135,7 @@ func (r *Reporter) Measure(ctx context.Context) error {
 		})
 		pb.Points = append(pb.Points, &metricspb.MetricPoint{
 			Kind:          metricspb.MetricKind_GAUGE,
-			TimeSeriesKey: fmt.Sprintf("cpu.idle"),
+			TimeSeriesKey: "cpu.idle",
 			Labels:        labels,
 			Value: &metricspb.MetricPoint_Float{
 				Float: cpu.Idle,
@@ -143,7 +143,7 @@ func (r *Reporter) Measure(ctx context.Context) error {
 		})
 		pb.Points = append(pb.Points, &metricspb.MetricPoint{
 			Kind:          metricspb.MetricKind_GAUGE,
-			TimeSeriesKey: fmt.Sprintf("cpu.steal"),
+			TimeSeriesKey: "cpu.steal",
 			Labels:        labels,
 			Value: &metricspb.MetricPoint_Float{
 				Float: cpu.Steal,
@@ -151,7 +151,7 @@ func (r *Reporter) Measure(ctx context.Context) error {
 		})
 		pb.Points = append(pb.Points, &metricspb.MetricPoint{
 			Kind:          metricspb.MetricKind_GAUGE,
-			TimeSeriesKey: fmt.Sprintf("cpu.nice"),
+			TimeSeriesKey: "cpu.nice",
 			Labels:        labels,
 			Value: &metricspb.MetricPoint_Float{
 				Float: cpu.Nice,
