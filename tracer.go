@@ -72,6 +72,7 @@ type tracerImpl struct {
 
 	// Flush state.
 	flushingLock      sync.Mutex
+	measuringLock     sync.RWMutex
 	reportInFlight    bool
 	lastReportAttempt time.Time
 
@@ -123,15 +124,16 @@ func CreateTracer(opts Options) (Tracer, error) {
 
 	now := time.Now()
 	impl := &tracerImpl{
-		opts:                    opts,
-		reporterID:              genSeededGUID(),
-		buffer:                  newSpansBuffer(opts.MaxBufferedSpans),
-		flushing:                newSpansBuffer(opts.MaxBufferedSpans),
-		closeReportLoopChannel:  make(chan struct{}),
-		reportLoopClosedChannel: make(chan struct{}),
-		converter:               newProtoConverter(opts),
-		accessToken:             opts.AccessToken,
-		attributes:              attributes,
+		opts:                          opts,
+		reporterID:                    genSeededGUID(),
+		buffer:                        newSpansBuffer(opts.MaxBufferedSpans),
+		flushing:                      newSpansBuffer(opts.MaxBufferedSpans),
+		closeReportLoopChannel:        make(chan struct{}),
+		closeSystemMetricsLoopChannel: make(chan struct{}),
+		reportLoopClosedChannel:       make(chan struct{}),
+		converter:                     newProtoConverter(opts),
+		accessToken:                   opts.AccessToken,
+		attributes:                    attributes,
 		metricsReporter: metrics.NewReporter(
 			metrics.WithReporterAccessToken(opts.AccessToken),
 			metrics.WithReporterTimeout(opts.SystemMetrics.Timeout),
@@ -242,6 +244,7 @@ func (tracer *tracerImpl) Close(ctx context.Context) {
 		select {
 		case <-tracer.reportLoopClosedChannel:
 			tracer.Flush(ctx)
+			tracer.measure(ctx)
 		case <-ctx.Done():
 			return
 		}
@@ -283,6 +286,11 @@ func (tracer *tracerImpl) RecordSpan(raw RawSpan) {
 func (tracer *tracerImpl) Flush(ctx context.Context) {
 	tracer.flushingLock.Lock()
 	defer tracer.flushingLock.Unlock()
+
+	// This is a hack to ensure that the process will wait for any active `tracer.measure` calls,
+	// even if the app doesn't use `tracer.Close`
+	tracer.measuringLock.RLock()
+	defer tracer.measuringLock.RUnlock()
 
 	flushStart := time.Now()
 
@@ -468,16 +476,7 @@ func (tracer *tracerImpl) reportLoop() {
 func (tracer *tracerImpl) systemMetricsLoop() {
 	ticker := time.NewTicker(tracer.metricsMeasurementFrequency)
 
-	measure := func() {
-		ctx, cancel := context.WithTimeout(context.Background(), tracer.metricsMeasurementFrequency)
-		defer cancel()
-
-		if err := tracer.metricsReporter.Measure(ctx); err != nil {
-			emitEvent(newEventSystemMetricsMeasurementFailed(err))
-		}
-	}
-
-	measure()
+	tracer.measure(context.Background())
 
 	for {
 		select {
@@ -486,9 +485,21 @@ func (tracer *tracerImpl) systemMetricsLoop() {
 				return
 			}
 
-			measure()
+			tracer.measure(context.Background())
 		case <-tracer.closeSystemMetricsLoopChannel:
 			return
 		}
+	}
+}
+
+func (tracer *tracerImpl) measure(ctx context.Context) {
+	tracer.measuringLock.Lock()
+	defer tracer.measuringLock.Unlock()
+
+	ctx, cancel := context.WithTimeout(ctx, tracer.metricsMeasurementFrequency)
+	defer cancel()
+
+	if err := tracer.metricsReporter.Measure(ctx); err != nil {
+		emitEvent(newEventSystemMetricsMeasurementFailed(err))
 	}
 }
