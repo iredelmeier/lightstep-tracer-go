@@ -41,6 +41,8 @@ github.com/iredelmeier/lightstep-tracer-common/golang/gogo v0.0.0-20200214222640
 github.com/iredelmeier/lightstep-tracer-common/golang/gogo v0.0.0-20200214222640-ce9eeeff23cc/go.mod h1:qklhhLq1aX+mtWk9cPHPzaBjWImj5ULL6C7HFJtXQMM=
 github.com/iredelmeier/lightstep-tracer-common/golang/gogo v0.0.0-20200214225335-2586f9d0889f h1:x/5JLyPZoXub1khWgPJ1Rtmg3MIWXZh3Zn/HR+cdKEE=
 github.com/iredelmeier/lightstep-tracer-common/golang/gogo v0.0.0-20200214225335-2586f9d0889f/go.mod h1:qklhhLq1aX+mtWk9cPHPzaBjWImj5ULL6C7HFJtXQMM=
+github.com/iredelmeier/lightstep-tracer-common/golang/gogo v0.0.0-20200218200959-19f8354a9009 h1:D6Bmih8k/xXY5B9yKIF2BMO7VsFdxqI4UNuf+JAhnzQ=
+github.com/iredelmeier/lightstep-tracer-common/golang/gogo v0.0.0-20200218200959-19f8354a9009/go.mod h1:qklhhLq1aX+mtWk9cPHPzaBjWImj5ULL6C7HFJtXQMM=
 github.com/julienschmidt/httprouter v1.2.0/go.mod h1:SYymIcj16QtmaHHD7aYtjjsJG7VTCxuUUipMqKk8s4w=
 github.com/kisielk/errcheck v1.1.0/go.mod h1:EZBBE59ingxPouuu3KfxchcWSUPOHkagtvWXihfKN4Q=
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=

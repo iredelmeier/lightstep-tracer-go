@@ -14,4 +14,4 @@ require (
 	google.golang.org/grpc v1.21.0
 )
 
-replace github.com/lightstep/lightstep-tracer-common/golang/gogo => /Users/isobel/go/src/github.com/lightstep/lightstep-tracer-common/golang/gogo
+replace github.com/lightstep/lightstep-tracer-common/golang/gogo => github.com/iredelmeier/lightstep-tracer-common/golang/gogo v0.0.0-20200218200959-19f8354a9009
