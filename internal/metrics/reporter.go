@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/base32"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -180,6 +181,10 @@ func (r *Reporter) Measure(ctx context.Context) error {
 		return err
 	}
 	defer res.Body.Close()
+
+	if res.StatusCode < 200 || res.StatusCode >= 400 {
+		return errors.New(fmt.Sprintf("metrics report failed: %s", res.Status))
+	}
 
 	return nil
 }
